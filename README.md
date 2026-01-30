@@ -7,6 +7,20 @@ A solução contempla desde a obtenção dos arquivos brutos até a consolidaç�
 
 ## Estrutura do Projeto
 
+- `01_api_ans/`  
+  Contém os scripts responsáveis pela coleta, processamento e análise dos dados da ANS.
+
+- `data/raw/`  
+  Arquivos originais baixados da ANS (formato ZIP).
+
+- `data/processed/`  
+  Dados processados e consolidados ao longo do pipeline.
+
+- `data/processed/analises/`  
+  Arquivos CSV finais gerados a partir das análises realizadas.
+
+- `venv/`  
+  Ambiente virtual Python utilizado no desenvolvimento do projeto.
 
 ## Etapas do Desenvolvimento
 
@@ -63,6 +77,40 @@ Essa abordagem facilita a reutilização dos dados, melhora a organização do p
 
 
 ## Como Executar o Projeto
+
+1. Clone o repositório e acesse o diretório do projeto.
+   ```bash
+   git clone <url-do-repositorio>
+   cd Teste_DeyvissonRobert 
+   ```
+2. Crie e ative um ambiente virtual Python.
+    ```bash
+    python -m venv venv
+   ```
+     Windows
+       ```bash
+        venv\Scripts\activate
+       ```
+    Linux / Mac
+       ```bash
+        source venv/bin/activate
+       ```
+3. Instale as dependências necessárias.
+    ```bash
+    pip install pandas requests
+   ```
+4. Execute o script de download dos dados.
+   ```bash
+   python 01_api_ans/download_dados.py
+   ```
+5. Execute o script de processamento e consolidação.
+   ```bash
+   python 01_api_ans/processar_despesas.py
+   ```
+6. Execute o script de análise dos dados.
+   ```bash
+   python 01_api_ans/analise_despesas.py
+   ```
 
 
 ## Considerações Finais
