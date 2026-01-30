@@ -42,7 +42,6 @@ Com os dados consolidados e tipados corretamente, foram realizadas análises sim
 
 Os resultados dessas análises foram salvos em arquivos CSV separados no diretório `data/processed/analises`, facilitando a visualização e reutilização das informações.
 
-
 ## Trade-offs Técnicos
 
 ### 1. Download direto dos arquivos em vez de listagem automática
@@ -73,8 +72,6 @@ Para realizar as análises, considerei trabalhar diretamente sobre o arquivo con
 No entanto, optei por gerar arquivos CSV agregados separados para cada análise realizada.
 
 Essa abordagem facilita a reutilização dos dados, melhora a organização do projeto e torna os resultados mais claros para quem for avaliar ou consumir os arquivos, mesmo com a criação de arquivos adicionais.
-
-
 
 ## Como Executar o Projeto
 
@@ -111,6 +108,11 @@ Essa abordagem facilita a reutilização dos dados, melhora a organização do p
    ```bash
    python 01_api_ans/analise_despesas.py
    ```
-
-
+   
 ## Considerações Finais
+
+Este projeto foi desenvolvido com foco em simplicidade, reprodutibilidade e clareza técnica.
+
+Ao longo do desafio, priorizei decisões que garantissem estabilidade do pipeline e facilidade de entendimento, mesmo diante de limitações e inconsistências nos dados públicos disponibilizados.
+
+A solução final entrega um fluxo completo de coleta, processamento, consolidação e análise, além de documentação clara sobre as decisões técnicas e trade-offs adotados.
