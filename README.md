@@ -32,7 +32,6 @@ Inicialmente considerei a listagem automática dos arquivos via FTP, porém iden
 Para garantir uma solução simples e estável, optei pelo download direto dos arquivos a partir de seus nomes conhecidos, seguindo o padrão oficial da ANS (ex: `4T2023.zip`).  
 Os arquivos são armazenados no diretório `data/raw`.
 
-
 ---
 
 ### 1.2 Transformação Inicial dos Dados
@@ -55,7 +54,6 @@ Durante a consolidação, tratei as seguintes inconsistências:
 - Datas em formatos inconsistentes foram convertidas com tolerância a erro
 - O campo `REG_ANS` foi utilizado como identificador temporário de operadora, o que foi documentado como uma limitação dos dados disponíveis
 
-
 ---
 
 ### 2.1 Limpeza e Padronização dos Dados
@@ -70,6 +68,19 @@ Os dados consolidados de despesas foram enriquecidos com informações cadastrai
 
 Realizei um join utilizando o CNPJ como chave, adicionando as colunas RegistroANS, Modalidade e UF. O processo foi documentado considerando casos de ausência ou duplicidade de CNPJ no cadastro oficial.
 
+---
+
+### 2.3 Agregação de Despesas por Operadora e UF
+Os dados enriquecidos foram agregados por RazaoSocial e UF, conforme solicitado no teste.
+
+Para cada grupo, foram calculados:
+- Total de despesas
+- Média de despesas por trimestre
+- Desvio padrão das despesas, com o objetivo de identificar variações significativas nos valores
+
+O resultado foi ordenado pelo total de despesas (do maior para o menor) e salvo no arquivo `despesas_agregadas.csv`.
+
+Essa etapa reduz significativamente o volume de dados, transformando registros individuais em informações consolidadas e mais adequadas para análise.
 
 ## 🛠️ Trade-offs Técnicos
 
@@ -85,13 +96,10 @@ Durante a leitura dos arquivos CSV, identifiquei linhas com formato inconsistent
 
 Em vez de interromper o processamento, optei por permitir o descarte dessas linhas, priorizando a continuidade do pipeline e a robustez da solução, mesmo com a perda de alguns registros problemáticos.
 
----
-
 ### 2.1 Conversão explícita de valores monetários
 Escolhi realizar a conversão manual dos valores monetários para formato numérico, em vez de depender de configurações de locale.
 
 Essa decisão torna o processamento mais previsível, independente do ambiente de execução e mais seguro para análises e agregações futuras.
-
 
 ---
 
@@ -105,6 +113,15 @@ Para tratar inconsistências:
 - CNPJs duplicados no cadastro foram resolvidos mantendo apenas um registro por CNPJ
 
 Essa abordagem prioriza a integridade dos dados financeiros e evita a perda de informações relevantes, ao custo de manter registros parcialmente enriquecidos, o que considerei aceitável para fins analíticos.
+
+---
+
+### 2.3 Estratégia de agregação e ordenação dos dados
+Para a etapa de agregação, optei por realizar os cálculos diretamente utilizando operações de groupby no Pandas, considerando o volume atual dos dados e o escopo do desafio.
+
+Essa abordagem simplifica a implementação, mantém o código legível e apresenta boa performance para o tamanho do dataset utilizado.
+
+A ordenação foi realizada em memória, priorizando clareza e rapidez de desenvolvimento. Em cenários com volumes significativamente maiores, estratégias como processamento incremental ou uso direto de banco de dados seriam consideradas.
 
 ## Como Executar o Projeto
 
