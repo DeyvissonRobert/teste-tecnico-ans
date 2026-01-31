@@ -22,56 +22,67 @@ A solução contempla desde a obtenção dos arquivos brutos até a consolidaç�
 - `venv/`  
   Ambiente virtual Python utilizado no desenvolvimento do projeto.
 
-## Etapas do Desenvolvimento
+## 👣 Etapas do Desenvolvimento
 
 ### 1.1 Coleta dos Dados
 Os dados foram obtidos a partir das Demonstrações Contábeis disponibilizadas pela ANS.
 
-Os arquivos correspondentes aos trimestres analisados foram baixados e armazenados localmente no diretório `data/raw`, mantendo os arquivos originais conforme disponibilizados pela fonte oficial.
+Inicialmente foi considerada a listagem automática dos arquivos via FTP, porém foram identificadas instabilidades no servidor (erros de listagem e sensibilidade a maiúsculas/minúsculas).
+
+Para garantir uma solução simples e estável, foi adotado o download direto dos arquivos a partir de seus nomes conhecidos, seguindo o padrão oficial da ANS (ex: `4T2023.zip`).  
+Os arquivos são armazenados no diretório `data/raw`.
 
 ---
 
-### 1.3 Consolidação e Validação dos Dados
-Após o processamento inicial, os dados dos trimestres selecionados foram consolidados em um único arquivo CSV (`consolidado_despesas.csv`).
+### 1.2 Transformação Inicial dos Dados
+Após o download, os arquivos ZIP foram extraídos e convertidos para o formato CSV.
 
-Durante essa etapa:
-- Foi extraído o ano a partir da coluna de data.
-- Os valores monetários foram convertidos para formato numérico.
-- Registros com valores zerados ou negativos foram removidos.
-- Campos necessários para análise (CNPJ, Razão Social, Trimestre, Ano e Valor de Despesas) foram padronizados.
-
-Como os dados contábeis não possuem CNPJ e Razão Social reais, o campo `REG_ANS` foi utilizado como identificador da operadora, e a coluna `DESCRICAO` como identificação textual, decisão documentada para garantir transparência.
+Optou-se por trabalhar diretamente com arquivos CSV ao longo do pipeline, priorizando simplicidade, legibilidade e compatibilidade com as etapas seguintes, considerando o prazo e o escopo do desafio.
 
 ---
 
-### 2. Processamento e Análises Exploratórias
-Com os dados consolidados, foram realizadas análises exploratórias simples para facilitar a compreensão das despesas, incluindo:
-- Totalização por trimestre
-- Totalização por conta contábil
-- Totalização por descrição
+### 1.3 Consolidação e Análise de Inconsistências
+Os dados dos trimestres analisados foram consolidados em um único arquivo (`consolidado_despesas.csv`), contendo as colunas exigidas pelo teste:
+- CNPJ  
+- RazaoSocial  
+- Trimestre  
+- Ano  
+- ValorDespesas  
 
-Os resultados dessas análises foram salvos em arquivos CSV no diretório `data/processed/analises`, permitindo fácil visualização e reutilização dos dados.
-
-
-## Trade-offs Técnicos
-
-### 1.2 Download direto dos arquivos em vez de listagem automática 
-
-Inicialmente foi considerada a listagem automática dos arquivos via FTP da ANS.  
-Durante os testes, foram identificadas instabilidades no serviço, como falhas de listagem e sensibilidade a variações de nomenclatura.
-
-Como trade-off, foi adotado o download direto dos arquivos a partir de seus nomes conhecidos, seguindo o padrão oficial da ANS (ex: `2T2023.zip`, `3T2023.zip`, `4T2023.zip`).
-
-Essa decisão reduz a complexidade da solução e aumenta a estabilidade do pipeline, ao custo de exigir atualização manual caso o padrão de nomes seja alterado no futuro.
+Durante a consolidação, foram tratadas as seguintes inconsistências:
+- Valores zerados ou negativos foram descartados
+- Datas em formatos inconsistentes foram convertidas com tolerância a erro
+- O campo `REG_ANS` foi utilizado como identificador temporário de operadora, documentado como limitação dos dados disponíveis
 
 ---
 
-### 2.3 Geração de arquivos agregados para análise
+### 2.1 Limpeza e Padronização dos Dados
+Os valores monetários, originalmente representados como texto com separador decimal em vírgula, foram limpos e convertidos explicitamente para formato numérico.
 
-Para a etapa de análise, foi avaliada a possibilidade de realizar todas as agregações diretamente sobre o arquivo consolidado sempre que necessário.
+Também foram realizadas padronizações de tipos de dados e remoção de registros inválidos, garantindo maior consistência para as análises posteriores.
 
-Como trade-off, optou-se por gerar arquivos CSV agregados separados para cada análise realizada.  
-Essa abordagem aumenta o número de arquivos gerados, porém melhora a organização do projeto, facilita a reutilização dos resultados e torna a validação das análises mais clara para avaliadores e usuários finais.
+---
+
+## 🛠️ Trade-offs Técnicos
+
+### 1.2 Download direto dos arquivos em vez de listagem automática
+A listagem dinâmica via FTP foi descartada devido a instabilidades encontradas durante os testes.
+
+O download direto pelos nomes conhecidos reduz a complexidade da solução e aumenta a confiabilidade, ao custo de exigir atualização manual caso o padrão dos arquivos seja alterado.
+
+---
+
+### 2.1 Leitura de dados com tolerância a inconsistências
+Durante a leitura dos arquivos CSV, foram identificadas linhas com formato inconsistente.
+
+Em vez de interromper o processamento, optou-se por permitir o descarte dessas linhas, priorizando a continuidade do pipeline e a robustez da solução, mesmo com a perda de alguns registros problemáticos.
+
+---
+
+### 2.1 Conversão explícita de valores monetários
+Foi escolhida a conversão manual dos valores monetários para formato numérico, em vez de depender de configurações de locale.
+
+Essa decisão torna o processamento mais previsível, independente do ambiente de execução e mais seguro para análises e agregações futuras.
 
 ## Como Executar o Projeto
 
