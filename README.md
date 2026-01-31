@@ -89,6 +89,16 @@ Optei por usar PostgreSQL em vez de MySQL porque ele é mais flexível para aná
 
 Para este teste, onde o foco está em análise de dados e queries mais elaboradas, o PostgreSQL se mostrou mais adequado e simples de trabalhar.
 
+---
+
+### 3. Banco de Dados e Análise SQL
+Criei scripts SQL compatíveis com PostgreSQL para estruturar o banco de dados, importar os arquivos CSV gerados nas etapas anteriores e responder às consultas analíticas solicitadas no teste.
+
+Os scripts incluem:
+- Criação das tabelas com tipos de dados e índices apropriados
+- Exemplos de importação dos dados a partir dos arquivos CSV
+- Queries analíticas para análise de crescimento de despesas, distribuição por UF e comparação com médias
+
 ## 🛠️ Trade-offs Técnicos
 
 ### 1.2 Download direto dos arquivos em vez de listagem automática
@@ -129,6 +139,22 @@ Para a etapa de agregação, optei por realizar os cálculos diretamente utiliza
 Essa abordagem simplifica a implementação, mantém o código legível e apresenta boa performance para o tamanho do dataset utilizado.
 
 A ordenação foi realizada em memória, priorizando clareza e rapidez de desenvolvimento. Em cenários com volumes significativamente maiores, estratégias como processamento incremental ou uso direto de banco de dados seriam consideradas.
+
+---
+
+### 3.2 Normalização e escolha de tipos de dados
+Optei por manter tabelas separadas para despesas, operadoras e dados agregados, em vez de utilizar uma única tabela desnormalizada.
+
+Essa abordagem reduz redundância, deixa o modelo mais organizado e facilita consultas analíticas, mesmo aumentando um pouco a complexidade das queries.
+
+Para valores monetários, escolhi o tipo DECIMAL, priorizando precisão nos cálculos financeiros em vez de performance extrema.
+
+---
+
+### 3.4 Estratégia das queries analíticas
+Optei por construir as queries utilizando CTEs (Common Table Expressions), pois deixam o código mais legível e fácil de entender.
+
+Mesmo existindo formas mais curtas de escrever algumas consultas, priorizei clareza e manutenibilidade, pensando em quem irá avaliar ou dar manutenção no código.
 
 ## Como Executar o Projeto
 
