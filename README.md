@@ -27,17 +27,18 @@ A solução contempla desde a obtenção dos arquivos brutos até a consolidaç�
 ### 1.1 Coleta dos Dados
 Os dados foram obtidos a partir das Demonstrações Contábeis disponibilizadas pela ANS.
 
-Inicialmente foi considerada a listagem automática dos arquivos via FTP, porém foram identificadas instabilidades no servidor (erros de listagem e sensibilidade a maiúsculas/minúsculas).
+Inicialmente considerei a listagem automática dos arquivos via FTP, porém identifiquei instabilidades no servidor (erros de listagem e sensibilidade a maiúsculas/minúsculas).
 
-Para garantir uma solução simples e estável, foi adotado o download direto dos arquivos a partir de seus nomes conhecidos, seguindo o padrão oficial da ANS (ex: `4T2023.zip`).  
+Para garantir uma solução simples e estável, optei pelo download direto dos arquivos a partir de seus nomes conhecidos, seguindo o padrão oficial da ANS (ex: `4T2023.zip`).  
 Os arquivos são armazenados no diretório `data/raw`.
+
 
 ---
 
 ### 1.2 Transformação Inicial dos Dados
 Após o download, os arquivos ZIP foram extraídos e convertidos para o formato CSV.
 
-Optou-se por trabalhar diretamente com arquivos CSV ao longo do pipeline, priorizando simplicidade, legibilidade e compatibilidade com as etapas seguintes, considerando o prazo e o escopo do desafio.
+Optei por trabalhar diretamente com arquivos CSV ao longo do pipeline, priorizando simplicidade, legibilidade e compatibilidade com as etapas seguintes, considerando o prazo e o escopo do desafio.
 
 ---
 
@@ -49,19 +50,26 @@ Os dados dos trimestres analisados foram consolidados em um único arquivo (`con
 - Ano  
 - ValorDespesas  
 
-Durante a consolidação, foram tratadas as seguintes inconsistências:
+Durante a consolidação, tratei as seguintes inconsistências:
 - Valores zerados ou negativos foram descartados
 - Datas em formatos inconsistentes foram convertidas com tolerância a erro
-- O campo `REG_ANS` foi utilizado como identificador temporário de operadora, documentado como limitação dos dados disponíveis
+- O campo `REG_ANS` foi utilizado como identificador temporário de operadora, o que foi documentado como uma limitação dos dados disponíveis
+
 
 ---
 
 ### 2.1 Limpeza e Padronização dos Dados
 Os valores monetários, originalmente representados como texto com separador decimal em vírgula, foram limpos e convertidos explicitamente para formato numérico.
 
-Também foram realizadas padronizações de tipos de dados e remoção de registros inválidos, garantindo maior consistência para as análises posteriores.
+Também realizei padronizações de tipos de dados e remoção de registros inválidos, garantindo maior consistência para as análises posteriores.
 
 ---
+
+### 2.2 Enriquecimento dos Dados com Cadastro de Operadoras
+Os dados consolidados de despesas foram enriquecidos com informações cadastrais das operadoras ativas da ANS.
+
+Realizei um join utilizando o CNPJ como chave, adicionando as colunas RegistroANS, Modalidade e UF. O processo foi documentado considerando casos de ausência ou duplicidade de CNPJ no cadastro oficial.
+
 
 ## 🛠️ Trade-offs Técnicos
 
@@ -73,16 +81,30 @@ O download direto pelos nomes conhecidos reduz a complexidade da solução e aum
 ---
 
 ### 2.1 Leitura de dados com tolerância a inconsistências
-Durante a leitura dos arquivos CSV, foram identificadas linhas com formato inconsistente.
+Durante a leitura dos arquivos CSV, identifiquei linhas com formato inconsistente.
 
-Em vez de interromper o processamento, optou-se por permitir o descarte dessas linhas, priorizando a continuidade do pipeline e a robustez da solução, mesmo com a perda de alguns registros problemáticos.
+Em vez de interromper o processamento, optei por permitir o descarte dessas linhas, priorizando a continuidade do pipeline e a robustez da solução, mesmo com a perda de alguns registros problemáticos.
 
 ---
 
 ### 2.1 Conversão explícita de valores monetários
-Foi escolhida a conversão manual dos valores monetários para formato numérico, em vez de depender de configurações de locale.
+Escolhi realizar a conversão manual dos valores monetários para formato numérico, em vez de depender de configurações de locale.
 
 Essa decisão torna o processamento mais previsível, independente do ambiente de execução e mais seguro para análises e agregações futuras.
+
+
+---
+
+### 2.2 Estratégia de join e tratamento de inconsistências no cadastro de operadoras
+Durante o enriquecimento dos dados, foi necessário realizar um join entre o arquivo consolidado de despesas e o cadastro de operadoras ativas da ANS, utilizando o CNPJ como chave.
+
+Optei por utilizar um left join, garantindo que todos os registros de despesas fossem preservados, mesmo quando não houvesse correspondência no cadastro de operadoras.
+
+Para tratar inconsistências:
+- CNPJs sem correspondência no cadastro foram mantidos, com campos de cadastro nulos
+- CNPJs duplicados no cadastro foram resolvidos mantendo apenas um registro por CNPJ
+
+Essa abordagem prioriza a integridade dos dados financeiros e evita a perda de informações relevantes, ao custo de manter registros parcialmente enriquecidos, o que considerei aceitável para fins analíticos.
 
 ## Como Executar o Projeto
 
