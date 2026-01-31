@@ -82,6 +82,13 @@ O resultado foi ordenado pelo total de despesas (do maior para o menor) e salvo 
 
 Essa etapa reduz significativamente o volume de dados, transformando registros individuais em informações consolidadas e mais adequadas para análise.
 
+---
+
+### 3. Escolha do banco de dados
+Optei por usar PostgreSQL em vez de MySQL porque ele é mais flexível para análises, lida melhor com consultas mais complexas e tem suporte mais completo a funções analíticas.
+
+Para este teste, onde o foco está em análise de dados e queries mais elaboradas, o PostgreSQL se mostrou mais adequado e simples de trabalhar.
+
 ## 🛠️ Trade-offs Técnicos
 
 ### 1.2 Download direto dos arquivos em vez de listagem automática
