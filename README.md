@@ -99,6 +99,34 @@ Os scripts incluem:
 - Exemplos de importação dos dados a partir dos arquivos CSV
 - Queries analíticas para análise de crescimento de despesas, distribuição por UF e comparação com médias
 
+---
+
+### 4.2 Backend – API com FastAPI
+
+Implementei uma API REST utilizando FastAPI para disponibilizar os dados processados nas etapas anteriores.
+
+A API consome diretamente os arquivos CSV gerados no pipeline, evitando a necessidade de configurar um banco de dados em produção, o que facilita a execução e validação do projeto por quem for avaliá-lo.
+
+#### Rotas disponíveis
+
+- **GET /api/operadoras**  
+  Lista as operadoras com paginação (`page` e `limit`).
+
+- **GET /api/operadoras/{cnpj}**  
+  Retorna os dados cadastrais de uma operadora específica.
+
+- **GET /api/operadoras/{cnpj}/despesas**  
+  Retorna o histórico de despesas da operadora ao longo dos trimestres.
+
+- **GET /api/estatisticas**  
+  Retorna estatísticas agregadas:
+  - Total geral de despesas
+  - Média das despesas
+  - Top 5 operadoras com maiores despesas
+
+A documentação interativa da API está disponível automaticamente via Swagger em `/docs`.
+
+
 ## 🛠️ Trade-offs Técnicos
 
 ### 1.2 Download direto dos arquivos em vez de listagem automática
@@ -156,6 +184,46 @@ Optei por construir as queries utilizando CTEs (Common Table Expressions), pois 
 
 Mesmo existindo formas mais curtas de escrever algumas consultas, priorizei clareza e manutenibilidade, pensando em quem irá avaliar ou dar manutenção no código.
 
+---
+
+### 4.2 – Backend
+
+#### 4.2.1. Escolha do Framework
+Optei por utilizar FastAPI por ser simples de configurar, ter ótima performance e já fornecer documentação automática das rotas via Swagger.
+
+Para o escopo do teste, ele entrega mais produtividade e facilidade de testes do que o Flask, sem adicionar complexidade desnecessária ao projeto.
+
+---
+
+#### 4.2.2. Estratégia de Paginação
+Foi utilizada paginação baseada em offset, com os parâmetros page e limit.
+
+Essa abordagem é simples de implementar, fácil de entender e atende bem ao volume de dados utilizado no projeto, além de facilitar o consumo no frontend.
+
+---
+
+#### 4.2.3. Cache vs Queries Diretas
+
+Para a rota /api/estatisticas, optei por calcular os dados diretamente a partir dos arquivos CSV a cada requisição.
+
+Como os dados não sofrem atualizações frequentes e o volume é controlado, essa abordagem mantém o código mais simples e evita a necessidade de camadas extras de cache ou pré-processamento.
+
+Em um cenário de produção com alto volume ou múltiplas requisições simultâneas, o uso de cache ou dados pré-calculados seria mais indicado.
+
+---
+
+#### 4.2.4. Estrutura de Resposta da API
+As rotas paginadas retornam dados acompanhados de metadados, no formato:
+```bash
+{
+  "data": [...],
+  "page": 1,
+  "limit": 10,
+  "total": 100
+}
+   ```
+Essa estrutura facilita a implementação da navegação no frontend e torna a API mais clara e fácil de consumir.
+
 ## Como Executar o Projeto
 
 1. Clone o repositório e acesse o diretório do projeto.
@@ -199,3 +267,4 @@ Este projeto foi desenvolvido com foco em simplicidade, reprodutibilidade e clar
 Ao longo do desafio, priorizei decisões que garantissem estabilidade do pipeline e facilidade de entendimento, mesmo diante de limitações e inconsistências nos dados públicos disponibilizados.
 
 A solução final entrega um fluxo completo de coleta, processamento, consolidação e análise, além de documentação clara sobre as decisões técnicas e trade-offs adotados.
+ 
