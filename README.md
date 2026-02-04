@@ -9,7 +9,7 @@ Ao longo do projeto, priorizei simplicidade, clareza e reprodutibilidade, docume
 ## 📌 Navegação Rápida
 
 - [🖥️ Funcionalidades Implementadas](#️-funcionalidades-implementadas)
-- [👨🏾‍💻 Tecnologias Utilizadas](#-tecnologias-utilizadas)
+- [👨🏾‍💻 Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [🧱 Estrutura do Projeto](#-estrutura-do-projeto)
 - [👣 Etapas do Desenvolvimento](#-etapas-do-desenvolvimento)
 - [🛠️ Trade-offs Técnicos](#️-trade-offs-técnicos)
@@ -412,7 +412,6 @@ Optei por mostrar mensagens simples e claras para que o usuário entenda facilme
    ```bash
    cd 04_api_web
    ```
-    ```md
 > ⚠️ **Observação:** Certifique-se de que o ambiente virtual esteja ativo antes de iniciar a API,
 > especialmente após acessar o diretório `04_api_web`, onde está o backend FastAPI.
 
@@ -459,7 +458,6 @@ Optei por mostrar mensagens simples e claras para que o usuário entenda facilme
    ```bash
    http://localhost:5173
    ```
-    ```md
 > ⚠️ **Observação:** O backend (FastAPI) e o frontend (Vue.js) devem estar rodando simultaneamente em terminais separados para que a aplicação funcione corretamente.
    
 ## 🚀 Considerações Finais
