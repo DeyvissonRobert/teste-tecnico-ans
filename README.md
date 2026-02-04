@@ -24,7 +24,7 @@ Ao longo do projeto, priorizei simplicidade, clareza e reprodutibilidade, docume
 </p>
 
 <p align="center">
-  <em>À esquerda: Page 1, com barra de Pesquida, Grafico e Tabela. • À direita: Page 2, com Histórico de Despesas. Abre ao clicar no CNPJ da page 2.</em>
+  <em>À esquerda: Page 1, com barra de Pesquida, Gráfico e Tabela. • À direita: Page 2, com Histórico de Despesas. Abre ao clicar no CNPJ da page 1.</em>
 </p>
 
 ## 🖥️ Funcionalidades Implementadas
